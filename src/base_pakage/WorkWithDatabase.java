@@ -93,4 +93,32 @@ public class WorkWithDatabase {
 
     }
 
+    private void databaseSubject(String sqlCommand) {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlCommand);
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String codeNumberSubject = rs.getString("code_number_subject");
+                String nameSubject = rs.getString("name_subject");
+                String numberOfHours = String.valueOf(rs.getInt("number_of_hours"));
+                String speciality = rs.getString("speciality");
+                String semester = String.valueOf(rs.getInt("semester"));
+
+                printTable(counter, codeNumberSubject, nameSubject, numberOfHours,
+                        speciality, semester);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
 }
