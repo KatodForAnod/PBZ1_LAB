@@ -17,6 +17,7 @@ public class WorkWithDatabase {
                     .getConnection("jdbc:postgresql://localhost:4444/testbase", "postgres", "12345678");
 
             //getInformationAboutAllTeachers();
+            //getInformationAboutAllStudentsGroupOnSpecialityECS();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -60,4 +61,35 @@ public class WorkWithDatabase {
         }
 
     }
+
+    private void getInformationAboutAllStudentsGroupOnSpecialityECS() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM student_group " +
+                    "WHERE speciality = 'ЭВМ';");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String codeNumberGroup = rs.getString("code_number_group");
+                String nameGroup = rs.getString("name_group");
+                String numberOfPpl = String.valueOf(rs.getInt("number_of_ppl"));
+                String speciality = rs.getString("speciality");
+                String surnameOfHeadman = rs.getString("surname_of_headman");
+
+                printTable(counter, codeNumberGroup, nameGroup, numberOfPpl,
+                        speciality, surnameOfHeadman);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+    }
+
 }
