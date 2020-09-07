@@ -15,11 +15,11 @@ public class WorkWithDatabase {
             Class.forName("org.postgresql.Driver");
             c = DriverManager
                     .getConnection("jdbc:postgresql://localhost:4444/testbase", "postgres", "12345678");
-
+            /*
             databaseTeachers("SELECT * FROM teachers;");
             databaseStudentGroup("SELECT * FROM student_group " +
                     "WHERE speciality = 'ЭВМ';");
-
+            */
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -121,7 +121,7 @@ public class WorkWithDatabase {
         }
     }
 
-    private void databaseTeachersTeachSubjectsInGroups(String sqlCommand) {
+    private void databaseTeacherTeachSubjectsInGroups(String sqlCommand) {
         try {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(sqlCommand);
