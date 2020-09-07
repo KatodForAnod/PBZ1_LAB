@@ -16,8 +16,10 @@ public class WorkWithDatabase {
             c = DriverManager
                     .getConnection("jdbc:postgresql://localhost:4444/testbase", "postgres", "12345678");
 
-            //getInformationAboutAllTeachers();
-            //getInformationAboutAllStudentsGroupOnSpecialityECS();
+            databaseTeachers("SELECT * FROM teachers;");
+            databaseStudentGroup("SELECT * FROM student_group " +
+                    "WHERE speciality = 'ЭВМ';");
+
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -32,10 +34,10 @@ public class WorkWithDatabase {
         }
     }
 
-    private void getInformationAboutAllTeachers() {
+    private void databaseTeachers(String sqlCommand) {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM teachers;");
+            ResultSet rs = stmt.executeQuery(sqlCommand);
 
             int counter = 1;
             while (rs.next()) {
@@ -62,11 +64,10 @@ public class WorkWithDatabase {
 
     }
 
-    private void getInformationAboutAllStudentsGroupOnSpecialityECS() {
+    private void databaseStudentGroup(String sqlCommand) {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM student_group " +
-                    "WHERE speciality = 'ЭВМ';");
+            ResultSet rs = stmt.executeQuery(sqlCommand);
 
             int counter = 1;
             while (rs.next()) {
