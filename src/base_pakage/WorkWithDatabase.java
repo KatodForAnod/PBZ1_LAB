@@ -121,4 +121,32 @@ public class WorkWithDatabase {
         }
     }
 
+    private void databaseTeachersTeachSubjectsInGroups(String sqlCommand) {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlCommand);
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String codeNumberGroup = rs.getString("code_number_group");
+                String codeNumberSubject = rs.getString("code_number_subject");
+                String personalNumber = rs.getString("personal_number");
+                String audienceNumber = String.valueOf(rs.getInt("audience_number"));
+
+                printTable(counter, codeNumberGroup, codeNumberSubject,
+                        personalNumber, audienceNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+    }
+
 }
