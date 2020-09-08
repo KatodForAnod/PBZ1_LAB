@@ -19,10 +19,10 @@ public class WorkWithDatabase {
             databaseTeachers("SELECT * FROM teachers;");
             databaseStudentGroup("SELECT * FROM student_group " +
                     "WHERE speciality = 'ЭВМ';");
-                        databaseTeacherTeachSubjectsInGroups("SELECT * " +
+            databaseTeacherTeachSubjectsInGroups("SELECT personal_number, audience_number " +
                     "FROM teacher_teach_subjects_in_groups " +
                     "WHERE code_number_subject = '18P';");
-            databaseSubject("SELECT DISTINCT e.* , y.code_number_subject " +
+            databaseSubject("SELECT DISTINCT e.code_number_subject, e.name_subject " +
                     "FROM subject e, teacher_teach_subjects_in_groups y " +
                     "WHERE e.code_number_subject = y.code_number_subject " +
                     "AND y.personal_number = (SELECT personal_number " +
@@ -55,13 +55,14 @@ public class WorkWithDatabase {
                     "AND z.audience_number > 100 " +
                     "AND z.audience_number < 200;");
              */
-
+            task9();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
     }
+
 
     private void printTable(int counter, String... strings) {
         System.out.print("\n" + counter);
@@ -70,7 +71,7 @@ public class WorkWithDatabase {
         }
     }
 
-    private void databaseTeachers(String sqlCommand) {
+    private void task1(String sqlCommand) {
         try {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(sqlCommand);
@@ -100,7 +101,7 @@ public class WorkWithDatabase {
 
     }
 
-    private void databaseStudentGroup(String sqlCommand) {
+    private void task2(String sqlCommand) {
         try {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(sqlCommand);
@@ -129,22 +130,49 @@ public class WorkWithDatabase {
 
     }
 
-    private void databaseSubject(String sqlCommand) {
+    private void task3() {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlCommand);
+            ResultSet rs = stmt.executeQuery("SELECT personal_number, audience_number " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE code_number_subject = '18P';");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String personalNumber = rs.getString("personal_number");
+                String audienceNumber = String.valueOf(rs.getInt("audience_number"));
+
+                printTable(counter, personalNumber, audienceNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task4() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT e.code_number_subject, e.name_subject " +
+                    "FROM subject e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.code_number_subject = y.code_number_subject " +
+                    "AND y.personal_number = (SELECT personal_number " +
+                    "FROM teachers " +
+                    "WHERE surname = 'Костин');");
 
             int counter = 1;
             while (rs.next()) {
 
                 String codeNumberSubject = rs.getString("code_number_subject");
                 String nameSubject = rs.getString("name_subject");
-                String numberOfHours = String.valueOf(rs.getInt("number_of_hours"));
-                String speciality = rs.getString("speciality");
-                String semester = String.valueOf(rs.getInt("semester"));
 
-                printTable(counter, codeNumberSubject, nameSubject, numberOfHours,
-                        speciality, semester);
+                printTable(counter, codeNumberSubject, nameSubject);
                 counter++;
             }
 
@@ -184,5 +212,154 @@ public class WorkWithDatabase {
         }
 
     }
+
+    private void task5() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE personal_number = (SELECT personal_number " +
+                    "FROM teachers " +
+                    "WHERE surname = 'Фролов';");
+
+            int counter = 1;
+            while (rs.next()) {
+                String codeNumberSubject = rs.getString("code_number_subject");
+
+                printTable(counter, codeNumberSubject);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task6() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * " +
+                    "FROM subject " +
+                    "WHERE speciality = 'АСОИ';");
+
+            int counter = 1;
+            while (rs.next()) {
+
+
+                String codeNumberSubject = rs.getString("code_number_subject");
+                String nameSubject = rs.getString("name_subject");
+                String numberOfHours = String.valueOf(rs.getInt("number_of_hours"));
+                String speciality = rs.getString("speciality");
+                String semester = String.valueOf(rs.getInt("semester"));
+
+                printTable(counter, codeNumberSubject, nameSubject,
+                        numberOfHours, speciality, semester);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task7() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT q.* " +
+                    "FROM teachers q, (SELECT e.personal_number " +
+                    "FROM teacher_teach_subjects_in_groups e, subject y " +
+                    "WHERE e.code_number_subject = y.code_number_subject " +
+                    "AND y.speciality = 'АСОИ') r " +
+                    "WHERE q.personal_number = r.personal_number;");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String personalNumber = rs.getString("personal_number");
+                String surname = rs.getString("surname");
+                String position = rs.getString("position");
+                String department = rs.getString("department");
+                String speciality = rs.getString("speciality");
+                String homeNumber = String.valueOf(rs.getInt("home_number"));
+
+                printTable(counter, personalNumber, surname, position, department,
+                        speciality, homeNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task8() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT e.surname " +
+                    "FROM teachers e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.personal_number = y.personal_number " +
+                    "AND y.audience_number = 210;");
+
+            int counter = 1;
+            while (rs.next()) {
+                String surname = rs.getString("surname");
+
+                printTable(counter, surname);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task9() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT z.name_group, q.name_subject " +
+                    "FROM subject q, (SELECT e.*, y.name_group " +
+                    "FROM teacher_teach_subjects_in_groups e, student_group y " +
+                    "WHERE e.code_number_group = y.code_number_group " +
+                    ") z " +
+                    "WHERE q.code_number_subject = z.code_number_subject " +
+                    "AND z.audience_number > 100 " +
+                    "AND z.audience_number < 200;");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String nameGroup = rs.getString("name_group");
+                String nameSubject = rs.getString("name_subject");
+
+
+                printTable(counter, nameGroup, nameSubject);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
 
 }
