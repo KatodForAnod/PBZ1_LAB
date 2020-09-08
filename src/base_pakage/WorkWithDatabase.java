@@ -19,7 +19,43 @@ public class WorkWithDatabase {
             databaseTeachers("SELECT * FROM teachers;");
             databaseStudentGroup("SELECT * FROM student_group " +
                     "WHERE speciality = 'ЭВМ';");
-            */
+                        databaseTeacherTeachSubjectsInGroups("SELECT * " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE code_number_subject = '18P';");
+            databaseSubject("SELECT DISTINCT e.* , y.code_number_subject " +
+                    "FROM subject e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.code_number_subject = y.code_number_subject " +
+                    "AND y.personal_number = (SELECT personal_number " +
+                    "FROM teachers " +
+                    "WHERE surname = 'Костин');");
+            databaseTeacherTeachSubjectsInGroups("SELECT * " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE personal_number = (SELECT personal_number " +
+                    "FROM teachers " +
+                    "WHERE surname = 'Фролов';");
+            databaseSubject("SELECT * " +
+                    "FROM subject " +
+                    "WHERE speciality = 'АСОИ';");
+            databaseTeachers("SELECT DISTINCT q.* " +
+                    "FROM teachers q, (SELECT e.personal_number " +
+                    "FROM teacher_teach_subjects_in_groups e, subject y " +
+                    "WHERE e.code_number_subject = y.code_number_subject " +
+                    "AND y.speciality = 'АСОИ') r " +
+                    "WHERE q.personal_number = r.personal_number;");
+            databaseTeachers("SELECT DISTINCT e.* " +
+                    "FROM teachers e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.personal_number = y.personal_number " +
+                    "AND y.audience_number = 210;");
+            databaseSubject("SELECT DISTINCT z.name_group, q.* " +
+                    "FROM subject q, (SELECT e.*, y.name_group " +
+                    "FROM teacher_teach_subjects_in_groups e, student_group y " +
+                    "WHERE e.code_number_group = y.code_number_group " +
+                    ") z " +
+                    "WHERE q.code_number_subject = z.code_number_subject " +
+                    "AND z.audience_number > 100 " +
+                    "AND z.audience_number < 200;");
+             */
+
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
