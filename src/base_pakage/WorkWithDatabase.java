@@ -55,13 +55,14 @@ public class WorkWithDatabase {
                     "AND z.audience_number > 100 " +
                     "AND z.audience_number < 200;");
              */
-            task9();
+            task15();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
     }
+
 
 
     private void printTable(int counter, String... strings) {
@@ -361,5 +362,115 @@ public class WorkWithDatabase {
         }
     }
 
+    private void tas10not() {
+    }
 
+    private void task11() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT SUM(number_of_ppl) " +
+                    "FROM student_group " +
+                    "WHERE speciality = 'ЭВМ';");
+
+            int counter = 1;
+            while (rs.next()) {
+                String sumNumberOfPpl = String.valueOf(rs.getInt("SUM"));
+
+                printTable(counter, sumNumberOfPpl);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task12() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT y.personal_number " +
+                    "FROM student_group e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.code_number_group = y.code_number_group " +
+                    "AND e.speciality = 'ЭВМ';");
+
+            int counter = 1;
+            while (rs.next()) {
+                String personalNumber = rs.getString("personal_number");
+
+
+                printTable(counter, personalNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task13not() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("s");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String codeNumberGroup = rs.getString("code_number_group");
+                String codeNumberSubject = rs.getString("code_number_subject");
+                String personalNumber = rs.getString("personal_number");
+                String audienceNumber = String.valueOf(rs.getInt("audience_number"));
+
+                printTable(counter, codeNumberGroup, codeNumberSubject,
+                        personalNumber, audienceNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task15() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT e.* " +
+                    "FROM subject e, (SELECT code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE personal_number != '221L') y " +
+                    "WHERE e.code_number_subject = y.code_number_subject;");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String codeNumberSubject = rs.getString("code_number_subject");
+                String nameSubject = rs.getString("name_subject");
+                String numberOfHours = String.valueOf(rs.getInt("number_of_hours"));
+                String speciality = rs.getString("speciality");
+                String semester = String.valueOf(rs.getInt("semester"));
+
+                printTable(counter, codeNumberSubject, nameSubject,
+                        numberOfHours, speciality, semester);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
 }
