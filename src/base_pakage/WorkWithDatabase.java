@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.stream.Stream;
 
 public class WorkWithDatabase {
+
     private Connection c;
     private Statement stmt;
 
@@ -55,7 +56,7 @@ public class WorkWithDatabase {
                     "AND z.audience_number > 100 " +
                     "AND z.audience_number < 200;");
              */
-            task18();
+            task21();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -587,6 +588,100 @@ public class WorkWithDatabase {
 
                 printTable(counter, codeNumberGroup, codeNumberSubject,
                         personalNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task19() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT a.* " +
+                    "FROM (SELECT z.speciality AS speciality_stud, q.* " +
+                    "FROM  student_group z, (SELECT e.speciality, y.code_number_group " +
+                    "FROM teachers e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.personal_number = y.personal_number) q " +
+                    "WHERE q.code_number_group = z.code_number_group " +
+                    "ORDER BY code_number_group) a " +
+                    "WHERE a.speciality like CONCAT ('%',a.speciality_stud,'%');");
+
+            int counter = 1;
+            while (rs.next()) {
+                String specialityStud = rs.getString("speciality_stud");
+                String codeNumberGroup = rs.getString("code_number_group");
+                String speciality = rs.getString("speciality");
+
+                printTable(counter, codeNumberGroup, speciality, specialityStud);
+
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+    }
+
+    private void task20() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT a.* " +
+                    "FROM (SELECT z.speciality AS speciality_stud, q.* " +
+                    "FROM  student_group z, (SELECT e.speciality, y.code_number_group, e.personal_number " +
+                    "FROM teachers e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.personal_number = y.personal_number " +
+                    "AND e.department like '%ЭВМ%') q " +
+                    "WHERE q.code_number_group = z.code_number_group " +
+                    "ORDER BY code_number_group) a " +
+                    "WHERE a.speciality like CONCAT ('%',a.speciality_stud,'%');");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String personalNumber = rs.getString("personal_number");
+
+                printTable(counter, personalNumber);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task21() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT a.* " +
+                    "FROM (SELECT z.speciality AS speciality_stud, q.* " +
+                    "FROM  student_group z, (SELECT e.speciality, y.code_number_group " +
+                    "FROM teachers e, teacher_teach_subjects_in_groups y " +
+                    "WHERE e.personal_number = y.personal_number " +
+                    "AND e.department like '%АСУ%') q " +
+                    "WHERE q.code_number_group = z.code_number_group " +
+                    "ORDER BY code_number_group) a;");
+
+            int counter = 1;
+            while (rs.next()) {
+                String speciality = rs.getString("speciality_stud");
+
+                printTable(counter, speciality);
+
                 counter++;
             }
 
