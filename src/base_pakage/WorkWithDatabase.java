@@ -56,7 +56,7 @@ public class WorkWithDatabase {
                     "AND z.audience_number > 100 " +
                     "AND z.audience_number < 200;");
              */
-            task21();
+            task26();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -681,6 +681,159 @@ public class WorkWithDatabase {
                 String speciality = rs.getString("speciality_stud");
 
                 printTable(counter, speciality);
+
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task22() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT b.code_number_subject " +
+                    "FROM student_group a, teacher_teach_subjects_in_groups b " +
+                    "WHERE a.code_number_group = b.code_number_group " +
+                    "AND a.name_group = 'АС-8';");
+
+            int counter = 1;
+            while (rs.next()) {
+                String codeNumberSubject = rs.getString("code_number_subject");
+
+                printTable(counter, codeNumberSubject);
+
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task23not() {
+        try {
+            stmt = c.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT code_number_group " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE teacher_teach_subjects_in_groups.code_number_subject IN ( " +
+                    "SELECT DISTINCT teacher_teach_subjects_in_groups.code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "JOIN student_group " +
+                    "ON student_group.code_number_group = teacher_teach_subjects_in_groups.code_number_group " +
+                    "WHERE student_group.name_group = 'АС-8');");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String codeNumberGroup = rs.getString("code_number_group");
+
+                printTable(counter, codeNumberGroup);
+
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task24() {
+        try {
+            stmt = c.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT student_group.code_number_group " +
+                    "FROM student_group " +
+                    "WHERE NOT student_group.code_number_group IN ( " +
+                    "SELECT DISTINCT teacher_teach_subjects_in_groups.code_number_group " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE teacher_teach_subjects_in_groups.code_number_subject IN (" +
+                    "SELECT DISTINCT teacher_teach_subjects_in_groups.code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "JOIN student_group " +
+                    "ON student_group.code_number_group = teacher_teach_subjects_in_groups.code_number_group " +
+                    "WHERE student_group.name_group = 'АС-8') " +
+                    ");");
+
+            int counter = 1;
+            while (rs.next()) {
+                String codeNumberGroup = rs.getString("code_number_group");
+
+                printTable(counter, codeNumberGroup);
+
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task25() {
+        try {
+            stmt = c.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT code_number_group " +
+                    "FROM student_group " +
+                    "EXCEPT " +
+                    "SELECT DISTINCT q.code_number_group " +
+                    "FROM teacher_teach_subjects_in_groups q, (SELECT code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE personal_number = '430L') w " +
+                    "WHERE q.code_number_subject = w.code_number_subject;");
+
+            int counter = 1;
+            while (rs.next()) {
+                String codeNumberGroup = rs.getString("code_number_group");
+
+                printTable(counter, codeNumberGroup);
+
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
+
+    private void task26() {
+        try {
+            stmt = c.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT personal_number " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "WHERE code_number_group = (SELECT code_number_group " +
+                    "FROM student_group " +
+                    "WHERE name_group = 'Э-15') " +
+                    "AND code_number_subject != '12P';");
+
+            int counter = 1;
+            while (rs.next()) {
+                String personalNumber = rs.getString("personal_number");
+
+                printTable(counter, personalNumber);
 
                 counter++;
             }
