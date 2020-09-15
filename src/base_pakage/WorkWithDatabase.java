@@ -56,7 +56,7 @@ public class WorkWithDatabase {
                     "AND z.audience_number > 100 " +
                     "AND z.audience_number < 200;");
              */
-            task26();
+            //task26();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());

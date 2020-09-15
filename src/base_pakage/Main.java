@@ -95,6 +95,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        WorkWithDatabase a = new WorkWithDatabase();
+        // WorkWithDatabase a = new WorkWithDatabase();
+        CreateDatabase b = new CreateDatabase();
     }
 }
