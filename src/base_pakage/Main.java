@@ -96,6 +96,6 @@ public class Main {
 
     public static void main(String[] args) {
        // WorkWithDatabase a = new WorkWithDatabase();
-        CreateDatabase b = new CreateDatabase();
+        WorkWith2ndDatabase b = new WorkWith2ndDatabase();
     }
 }
