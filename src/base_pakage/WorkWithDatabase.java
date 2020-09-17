@@ -16,54 +16,14 @@ public class WorkWithDatabase {
             Class.forName("org.postgresql.Driver");
             c = DriverManager
                     .getConnection("jdbc:postgresql://localhost:4444/testbase", "postgres", "12345678");
-            /*
-            databaseTeachers("SELECT * FROM teachers;");
-            databaseStudentGroup("SELECT * FROM student_group " +
-                    "WHERE speciality = 'ЭВМ';");
-            databaseTeacherTeachSubjectsInGroups("SELECT personal_number, audience_number " +
-                    "FROM teacher_teach_subjects_in_groups " +
-                    "WHERE code_number_subject = '18P';");
-            databaseSubject("SELECT DISTINCT e.code_number_subject, e.name_subject " +
-                    "FROM subject e, teacher_teach_subjects_in_groups y " +
-                    "WHERE e.code_number_subject = y.code_number_subject " +
-                    "AND y.personal_number = (SELECT personal_number " +
-                    "FROM teachers " +
-                    "WHERE surname = 'Костин');");
-            databaseTeacherTeachSubjectsInGroups("SELECT * " +
-                    "FROM teacher_teach_subjects_in_groups " +
-                    "WHERE personal_number = (SELECT personal_number " +
-                    "FROM teachers " +
-                    "WHERE surname = 'Фролов';");
-            databaseSubject("SELECT * " +
-                    "FROM subject " +
-                    "WHERE speciality = 'АСОИ';");
-            databaseTeachers("SELECT DISTINCT q.* " +
-                    "FROM teachers q, (SELECT e.personal_number " +
-                    "FROM teacher_teach_subjects_in_groups e, subject y " +
-                    "WHERE e.code_number_subject = y.code_number_subject " +
-                    "AND y.speciality = 'АСОИ') r " +
-                    "WHERE q.personal_number = r.personal_number;");
-            databaseTeachers("SELECT DISTINCT e.* " +
-                    "FROM teachers e, teacher_teach_subjects_in_groups y " +
-                    "WHERE e.personal_number = y.personal_number " +
-                    "AND y.audience_number = 210;");
-            databaseSubject("SELECT DISTINCT z.name_group, q.* " +
-                    "FROM subject q, (SELECT e.*, y.name_group " +
-                    "FROM teacher_teach_subjects_in_groups e, student_group y " +
-                    "WHERE e.code_number_group = y.code_number_group " +
-                    ") z " +
-                    "WHERE q.code_number_subject = z.code_number_subject " +
-                    "AND z.audience_number > 100 " +
-                    "AND z.audience_number < 200;");
-             */
-            //task26();
+
+            task23();
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
     }
-
 
     private void printTable(int counter, String... strings) {
         System.out.print("\n" + counter);
@@ -72,10 +32,10 @@ public class WorkWithDatabase {
         }
     }
 
-    private void task1(String sqlCommand) {
+    private void task1() {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlCommand);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM teachers;");
 
             int counter = 1;
             while (rs.next()) {
@@ -102,10 +62,11 @@ public class WorkWithDatabase {
 
     }
 
-    private void task2(String sqlCommand) {
+    private void task2() {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlCommand);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM student_group " +
+                    "WHERE speciality = 'ЭВМ';");
 
             int counter = 1;
             while (rs.next()) {
@@ -184,34 +145,6 @@ public class WorkWithDatabase {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-    }
-
-    private void databaseTeacherTeachSubjectsInGroups(String sqlCommand) {
-        try {
-            stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlCommand);
-
-            int counter = 1;
-            while (rs.next()) {
-
-                String codeNumberGroup = rs.getString("code_number_group");
-                String codeNumberSubject = rs.getString("code_number_subject");
-                String personalNumber = rs.getString("personal_number");
-                String audienceNumber = String.valueOf(rs.getInt("audience_number"));
-
-                printTable(counter, codeNumberGroup, codeNumberSubject,
-                        personalNumber, audienceNumber);
-                counter++;
-            }
-
-            rs.close();
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-
     }
 
     private void task5() {
@@ -362,7 +295,32 @@ public class WorkWithDatabase {
         }
     }
 
-    private void tas10not() {
+    private void task10() {
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT a.code_number_group, b.code_number_group as s " +
+                    "FROM student_group a, student_group b " +
+                    "WHERE a.speciality = b.speciality " +
+                    "AND a.code_number_group < b.code_number_group;");
+
+            int counter = 1;
+            while (rs.next()) {
+
+                String nameGroup = rs.getString("code_number_group");
+                String nameSubject = rs.getString("s");
+
+
+                printTable(counter, nameGroup, nameSubject);
+                counter++;
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
     }
 
     private void task11() {
@@ -415,21 +373,24 @@ public class WorkWithDatabase {
         }
     }
 
-    private void task13not() {
+    private void task13() {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("s");
+            ResultSet rs = stmt.executeQuery("SELECT a.code_number_subject " +
+                    "FROM (SELECT code_number_subject, " +
+                    "COUNT(*) as count " +
+                    "FROM teacher_teach_subjects_in_groups " +
+                    "GROUP BY code_number_subject) a " +
+                    "WHERE a.count = (SELECT COUNT(*) " +
+                    "FROM student_group);");
 
             int counter = 1;
             while (rs.next()) {
 
-                String codeNumberGroup = rs.getString("code_number_group");
-                String codeNumberSubject = rs.getString("code_number_subject");
-                String personalNumber = rs.getString("personal_number");
-                String audienceNumber = String.valueOf(rs.getInt("audience_number"));
+                String codeNumberSubject = rs.getString("count");
 
-                printTable(counter, codeNumberGroup, codeNumberSubject,
-                        personalNumber, audienceNumber);
+
+                printTable(counter, codeNumberSubject);
                 counter++;
             }
 
@@ -442,12 +403,24 @@ public class WorkWithDatabase {
         }
     }
 
-    private void task14not() {
+    private void task14() {
         try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT DISTINCT personal_number " +
+            ResultSet rs = stmt.executeQuery("SELECT qq.personal_number " +
+                    "FROM (SELECT qw.personal_number, COUNT(*) as count " +
+                    "FROM (SELECT DISTINCT q.personal_number, q.code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups q, (SELECT DISTINCT a.code_number_subject " +
+                    "FROM teacher_teach_subjects_in_groups a, (SELECT personal_number " +
                     "FROM teacher_teach_subjects_in_groups " +
-                    "WHERE code_number_subject = '14P';");
+                    "WHERE code_number_subject = '14P') b " +
+                    "WHERE a.personal_number = b.personal_number) w " +
+                    "WHERE q.code_number_subject = w.code_number_subject) qw " +
+                    "GROUP BY qw.personal_number) qq " +
+                    "WHERE qq.count = (SELECT COUNT(we.*) FROM (SELECT DISTINCT a.code_number_subject " +
+                    "   FROM teacher_teach_subjects_in_groups a, (SELECT personal_number " +
+                    "   FROM teacher_teach_subjects_in_groups " +
+                    "   WHERE code_number_subject = '14P') b " +
+                    "   WHERE a.personal_number = b.personal_number) we ) ;");
 
             int counter = 1;
             while (rs.next()) {
@@ -720,11 +693,11 @@ public class WorkWithDatabase {
         }
     }
 
-    private void task23not() {
+    private void task23() {
         try {
             stmt = c.createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT DISTINCT code_number_group " +
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT teacher_teach_subjects_in_groups.code_number_group " +
                     "FROM teacher_teach_subjects_in_groups " +
                     "WHERE teacher_teach_subjects_in_groups.code_number_subject IN ( " +
                     "SELECT DISTINCT teacher_teach_subjects_in_groups.code_number_subject " +
